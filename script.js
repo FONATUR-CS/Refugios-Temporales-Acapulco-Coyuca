@@ -11,9 +11,6 @@ const map = L.map('map', {
   layers: [satelliteWithLabels, refugiosLayer]
 });
 
-// 🚫 Eliminado el control de capas (L.control.layers)
-// 🚫 Eliminadas las definiciones de baseLayers y overlays
-
 let refugiosData = {};
 Papa.parse("refugios.csv", {
   download: true,
@@ -36,17 +33,17 @@ function cargarGeojsonRefugios() {
           const props = refugiosData[clave];
 
           if (!props) {
-            return null; // ⛔ Ignora puntos sin datos CSV
+            return null;
           }
 
-          const marker = L.circleMarker(latlng, {
-            radius: 6,
-            fillColor: "#ff6600",
-            color: "#000",
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8
+          const customIcon = L.icon({
+            iconUrl: 'refugio.svg',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15],
+            popupAnchor: [0, -15]
           });
+
+          const marker = L.marker(latlng, { icon: customIcon });
 
           const popup = "<strong>" + props.Nombre + "</strong><br>" +
                         "<b>Dirección:</b> " + props["Dirección"] + "<br>" +
@@ -55,12 +52,12 @@ function cargarGeojsonRefugios() {
                         "<b>Municipio:</b> " + props["Municipio"] + "<br>" +
                         "<b>Responsable del H. Ayuntamiento:</b> " + props["Responsable del H. Ayuntamiento"] + "<br>" +
                         '<b>Ubicación:</b> <a href="' + props["Ubicación"] + '" target="_blank">Ver en mapa</a>';
+
           marker.bindPopup(popup);
           return marker;
         }
       }).addTo(refugiosLayer);
 
-      // ✅ Zoom automático a la capa de refugios
       map.fitBounds(capaRefugios.getBounds());
     });
 }
