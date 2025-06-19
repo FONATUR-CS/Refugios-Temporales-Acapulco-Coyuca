@@ -51,7 +51,7 @@ function cargarGeojsonRefugios() {
                         "<b>Capacidad familias:</b> " + props["Capacidad de familias"] + "<br>" +
                         "<b>Municipio:</b> " + props["Municipio"] + "<br>" +
                         "<b>Responsable del H. Ayuntamiento:</b> " + props["Responsable del H. Ayuntamiento"] + "<br>" +
-                        '<b>Ubicación:</b> <a href="' + props["Ubicación"] + '" target="_blank">Ver en mapa</a>';
+                        '<b>Ubicación:</b> <a href="' + props["Ubicación"] + '" target="_blank">Ver ubicación</a>';
 
           marker.bindPopup(popup);
           return marker;
