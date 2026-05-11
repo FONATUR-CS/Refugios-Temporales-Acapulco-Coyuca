@@ -1,51 +1,23 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Refugios Temporales Acapulco - Coyuca</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-  <!-- CSS personalizado -->
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Fuente Noto Sans -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <header>
-    <h1>Ubicación de refugios temporales Acapulco - Coyuca</h1>
-<p>
-  Fuentes: Sistema Nacional de Registro de Refugios Temporales, Coordinación Nacional de Protección Civil, 2025; Catálogo de refugios temporales 2025. Coordinación General de Protección Civil y Bomberos Acapulco, 2025;
-  Catálogo de refugios temporales 2025. Gobierno de Coyuca de Benítez 2024-2027; y Catálogo de refugios temporales
-  2025. Secretaría de Gestión Integral de Riesgos y Protección Civil Guerrero, 2025.
-  Recuperado de: 
-  [1] <a href="https://www.preparados.gob.mx/apps/RefugiosTemporales/" target="_blank">Sistema Nacional de Registro de Refugios Temporales</a>
-  [2] <a href="https://www.guerrero.gob.mx/wp-content/uploads/2025/05/RT-SGIRPCGRO-2025.pdf" target="_blank">Gobierno del Estado de Guerrero</a>
-  [3] <a href="https://acapulco.gob.mx/refugios-temporales/" target="_blank">Gobierno Municipal de Acapulco de Juárez</a>
-  [4] <a href="https://www.facebook.com/photo/?fbid=122159397968563471&set=a.122093539370563471" target="_blank">Gobierno Municipal de Coyuca de Benítez</a>  
-</p>
-
-
-  </header>
-
-  <div id="map"></div>
-
-  <footer>
-    <img src="footer.png" alt="Footer Institucional">
-  </footer>
-
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-  <!-- PapaParse para CSV -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-
-  <!-- Script personalizado -->
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Geoportal de refugios temporales para Acapulco y Coyuca de Benítez, Guerrero."
+    />
+    <title>Refugios Temporales Acapulco - Coyuca 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
