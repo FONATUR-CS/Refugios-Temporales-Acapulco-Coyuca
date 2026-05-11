@@ -1,0 +1,132 @@
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f1f5f9;
+  color: #020617;
+  font-family: Inter, 'Noto Sans', system-ui, sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #dbeafe;
+  font-family: Inter, 'Noto Sans', system-ui, sans-serif;
+}
+
+.leaflet-control-layers,
+.leaflet-bar a {
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 20px;
+  box-shadow: 0 22px 45px rgba(15, 23, 42, 0.22);
+}
+
+.leaflet-popup-content {
+  margin: 16px;
+}
+
+.reset-view-control {
+  margin-top: 8px !important;
+  overflow: hidden;
+}
+
+.reset-view-control button {
+  min-height: 34px;
+  min-width: 112px;
+  border: 0;
+  background: #ffffff;
+  color: #0f172a;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 0 12px;
+}
+
+.reset-view-control button:hover,
+.reset-view-control button:focus-visible {
+  background: #eef8f6;
+  color: #0f5e55;
+  outline: none;
+}
+
+.user-location-marker {
+  filter: drop-shadow(0 8px 18px rgba(37, 99, 235, 0.35));
+}
+
+.shelter-marker {
+  align-items: center;
+  background: #ffffff;
+  border: 3px solid #137569;
+  border-radius: 999px 999px 999px 4px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.28);
+  display: flex;
+  justify-content: center;
+  transform: rotate(-45deg);
+}
+
+.shelter-marker span {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  transform: rotate(45deg);
+  width: 100%;
+}
+
+.shelter-marker img {
+  height: 58%;
+  width: 58%;
+}
+
+.shelter-marker-selected {
+  background: #fef3c7;
+  border-color: #1d4ed8;
+  animation: selected-marker-breathe 1.8s ease-in-out infinite;
+  box-shadow: 0 0 0 8px rgba(37, 99, 235, 0.18), 0 16px 32px rgba(15, 23, 42, 0.32);
+  z-index: 700 !important;
+}
+
+@keyframes selected-marker-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.18), 0 16px 32px rgba(15, 23, 42, 0.32);
+  }
+
+  50% {
+    box-shadow: 0 0 0 14px rgba(37, 99, 235, 0.05), 0 18px 36px rgba(15, 23, 42, 0.36);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shelter-marker-selected {
+    animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .leaflet-control-layers-expanded {
+    max-width: 220px;
+  }
+}
