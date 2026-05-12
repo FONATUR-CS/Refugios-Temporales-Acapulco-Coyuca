@@ -20,7 +20,7 @@ export function ShelterCard({ shelter, selected, onSelect }) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <Badge>{shelter.municipality || 'Sin municipio'}</Badge>
-          <h3 className="mt-3 line-clamp-2 text-base font-extrabold leading-6 text-slate-950">
+          <h3 className="font-display mt-3 line-clamp-2 text-base font-bold leading-6 text-slate-950">
             {shelter.name}
           </h3>
         </div>
