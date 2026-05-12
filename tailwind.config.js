@@ -18,7 +18,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'Noto Sans', 'system-ui', 'sans-serif'],
+        sans: ['Geomanist', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Inter', 'Geomanist', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         panel: '0 18px 50px rgba(15, 23, 42, 0.14)',

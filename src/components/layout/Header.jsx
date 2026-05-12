@@ -1,12 +1,12 @@
 export function Header() {
   return (
-    <header className="z-20 border-b border-white/10 bg-institutional-900 text-white shadow-lg">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+    <header className="z-20 shrink-0 border-b border-white/10 bg-institutional-900 text-white shadow-lg">
+      <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3 px-4 py-2.5 sm:px-6 sm:py-3 lg:px-8">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-institutional-100 sm:text-xs">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-institutional-100 sm:text-xs">
             Geoportal 2026
           </p>
-          <h1 className="truncate text-lg font-extrabold tracking-tight sm:text-xl lg:text-2xl">
+          <h1 className="font-display truncate text-base font-bold sm:text-xl lg:text-2xl">
             Refugios temporales Acapulco - Coyuca
           </h1>
         </div>

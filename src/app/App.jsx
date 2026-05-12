@@ -1,3 +1,5 @@
+import { ErrorBoundary } from '../components/ErrorBoundary'
+import { Footer } from '../components/layout/Footer'
 import { Header } from '../components/layout/Header'
 import { Shell } from '../components/layout/Shell'
 import { ShelterMap } from '../components/map/ShelterMap'
@@ -40,7 +42,7 @@ function LocationTools({ nearestShelter, onSelectNearest, userLocation }) {
         <div className="min-w-0">
           <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Refugio más cercano</p>
           {nearestShelter ? (
-            <p className="mt-1 line-clamp-2 text-sm font-extrabold text-slate-950">
+            <p className="font-display mt-1 line-clamp-2 text-sm font-bold text-slate-950">
               {nearestShelter.name}
             </p>
           ) : (
@@ -75,7 +77,7 @@ function LocationTools({ nearestShelter, onSelectNearest, userLocation }) {
             rel="noreferrer"
             target="_blank"
           >
-            Como llegar
+            Cómo llegar
           </a>
         </div>
       ) : null}
@@ -84,22 +86,24 @@ function LocationTools({ nearestShelter, onSelectNearest, userLocation }) {
 }
 
 function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePanel }) {
-  const capacity = data.shelters.reduce((sum, shelter) => sum + (shelter.capacityPeople ?? 0), 0)
+  const capacity = locationTools.visibleShelters.reduce((sum, shelter) => sum + (shelter.capacityPeople ?? 0), 0)
+  const isFiltered = locationTools.visibleShelters.length !== data.shelters.length
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 p-3.5">
+    <div className="flex h-full min-h-0 flex-col gap-3 p-3 md:overflow-hidden">
       <div className="shrink-0">
         <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-slate-300 md:hidden" />
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-institutional-700">
+            <p className="text-xs font-bold uppercase tracking-wider text-institutional-700">
               Refugios activos 2026
             </p>
-            <h2 className="mt-1 truncate text-lg font-extrabold text-slate-950">
+            <h2 className="font-display mt-0.5 truncate text-base font-bold text-slate-950 sm:text-lg">
               Encuentra el refugio más cercano
             </h2>
-            <p className="mt-1 text-xs leading-5 text-slate-600">
-              {formatNumber(data.shelters.length)} refugios · Capacidad{' '}
+            <p className="mt-0.5 text-xs leading-4 text-slate-600 sm:leading-5">
+              {formatNumber(locationTools.visibleShelters.length)} refugio{locationTools.visibleShelters.length !== 1 ? 's' : ''}
+              {isFiltered ? ' filtrados' : ' activos'} · Capacidad{' '}
               {capacity ? formatNumber(capacity) : 'S/D'} personas
             </p>
           </div>
@@ -112,12 +116,13 @@ function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePan
           </button>
         </div>
       </div>
-      <div className={`${mobileExpanded ? 'flex' : 'hidden'} min-h-0 flex-1 flex-col gap-3 md:flex`}>
+      <div className={`${mobileExpanded ? 'flex' : 'hidden'} mobile-panel-scroll min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain md:flex md:overflow-hidden`}>
         <div className="space-y-2.5">
           <DataWarnings warnings={data.warnings} />
           <ShelterFilters
             municipalities={filters.municipalities}
             municipality={filters.municipality}
+            onClear={filters.clearFilters}
             onMunicipalityChange={filters.setMunicipality}
             onQueryChange={filters.setQuery}
             query={filters.query}
@@ -159,7 +164,7 @@ function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePan
             </p>
           </div>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto pr-1 lg:pb-2">
+        <div className="min-h-0 flex-none overflow-visible md:flex-1 md:overflow-y-auto md:pr-1 lg:pb-2">
           <ShelterList
             onSelect={filters.setSelectedShelterId}
             selectedShelterId={filters.selectedShelterId}
@@ -171,15 +176,6 @@ function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePan
   )
 }
 
-function Footer() {
-  return (
-    <footer className="z-20 border-t border-slate-200 bg-white px-4 py-2 shadow-[0_-10px_30px_rgba(15,23,42,0.08)]">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-center">
-        <img alt="Footer institucional" className="max-h-14 w-auto max-w-full object-contain" src="/footer.png" />
-      </div>
-    </footer>
-  )
-}
 
 export default function App() {
   const data = useSheltersData()
@@ -211,9 +207,9 @@ export default function App() {
 
   if (data.error) {
     return (
-      <div className="flex min-h-screen flex-col bg-slate-100">
+      <div className="flex h-dvh flex-col overflow-hidden bg-slate-100">
         <Header />
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
+        <main className="mx-auto w-full max-w-3xl flex-1 overflow-auto px-4 py-8">
           <ErrorState error={data.error} />
         </main>
         <Footer />
@@ -223,9 +219,9 @@ export default function App() {
 
   if (data.loading) {
     return (
-      <div className="flex min-h-screen flex-col bg-slate-100">
+      <div className="flex h-dvh flex-col overflow-hidden bg-slate-100">
         <Header />
-        <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8">
+        <main className="mx-auto w-full max-w-3xl flex-1 overflow-auto px-4 py-8">
           <LoadingState />
         </main>
         <Footer />
@@ -234,37 +230,42 @@ export default function App() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-slate-100 text-slate-950">
+    <div className="flex h-dvh flex-col overflow-hidden bg-slate-100 text-slate-950">
       <Header />
-      <Shell
-        panelExpanded={mobilePanelExpanded}
-        map={
-          <ShelterMap
-            onSelect={selectShelter}
-            selectedShelter={filters.selectedShelter}
-            selectedShelterId={filters.selectedShelterId}
-            shelters={visibleShelters}
-            userLocation={userLocation.location}
-          />
-        }
-        panel={
-          <Panel
-            data={data}
-            filters={{ ...filters, setSelectedShelterId: selectShelter }}
-            mobileExpanded={mobilePanelExpanded}
-            onToggleMobilePanel={() => setMobilePanelExpanded((expanded) => !expanded)}
-            locationTools={{
-              clearLocation: userLocation.clearLocation,
-              error: userLocation.error,
-              loading: userLocation.loading,
-              nearestShelter,
-              requestLocation: userLocation.requestLocation,
-              userLocation: userLocation.location,
-              visibleShelters,
-            }}
-          />
-        }
-      />
+      <ErrorBoundary>
+        <Shell
+          panelExpanded={mobilePanelExpanded}
+          map={
+            <ShelterMap
+              onSelect={selectShelter}
+              onClearUserLocation={userLocation.clearLocation}
+              onRequestUserLocation={userLocation.requestLocation}
+              selectedShelter={filters.selectedShelter}
+              selectedShelterId={filters.selectedShelterId}
+              shelters={visibleShelters}
+              userLocation={userLocation.location}
+              userLocationLoading={userLocation.loading}
+            />
+          }
+          panel={
+            <Panel
+              data={data}
+              filters={{ ...filters, setSelectedShelterId: selectShelter }}
+              mobileExpanded={mobilePanelExpanded}
+              onToggleMobilePanel={() => setMobilePanelExpanded((expanded) => !expanded)}
+              locationTools={{
+                clearLocation: userLocation.clearLocation,
+                error: userLocation.error,
+                loading: userLocation.loading,
+                nearestShelter,
+                requestLocation: userLocation.requestLocation,
+                userLocation: userLocation.location,
+                visibleShelters,
+              }}
+            />
+          }
+        />
+      </ErrorBoundary>
       <Footer />
     </div>
   )

@@ -30,6 +30,11 @@ export function useShelterFilters(shelters) {
     [selectedShelterId, shelters],
   )
 
+  function clearFilters() {
+    setQuery('')
+    setMunicipality(ALL_MUNICIPALITIES)
+  }
+
   return {
     query,
     setQuery,
@@ -40,5 +45,6 @@ export function useShelterFilters(shelters) {
     selectedShelter,
     selectedShelterId,
     setSelectedShelterId,
+    clearFilters,
   }
 }
