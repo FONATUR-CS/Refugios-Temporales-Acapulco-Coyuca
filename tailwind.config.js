@@ -6,10 +6,21 @@ export default {
       colors: {
         institutional: {
           50: '#eef8f6',
-          100: '#d5eee9',
-          600: '#137569',
-          700: '#0f5e55',
-          900: '#002f2a',
+          100: '#d8eee8',
+          600: '#275e4e',
+          700: '#103f34',
+          900: '#082b24',
+        },
+        gold: {
+          50: '#fbf6ed',
+          100: '#f1e4cc',
+          500: '#c49953',
+          600: '#a87e3d',
+          700: '#7b5a2b',
+        },
+        sand: {
+          100: '#ddc9a3',
+          200: '#d0b888',
         },
         emergency: {
           50: '#eff6ff',
@@ -18,7 +29,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Geomanist', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Lato', 'Geomanist', 'Inter', 'system-ui', 'sans-serif'],
         display: ['Inter', 'Geomanist', 'system-ui', 'sans-serif'],
       },
       boxShadow: {

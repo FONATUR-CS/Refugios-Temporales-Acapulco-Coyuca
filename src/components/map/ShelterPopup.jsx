@@ -20,7 +20,7 @@ export function ShelterPopup({ shelter }) {
           ? `Capacidad: ${shelter.capacityPeople.toLocaleString('es-MX')} personas`
           : 'Capacidad no disponible'}
       </p>
-      <Button className="min-h-9 w-full px-3 text-sm" href={directionsUrl}>
+      <Button className="min-h-9 w-full px-3 text-sm !text-gold-500" href={directionsUrl}>
         Cómo llegar
       </Button>
     </div>
