@@ -1,8 +1,18 @@
 export function Footer() {
   return (
-    <footer className="z-20 shrink-0 border-t border-slate-200 bg-white px-4 py-1.5 shadow-[0_-10px_30px_rgba(15,23,42,0.08)] sm:py-2">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-center">
-        <img alt="Footer institucional" className="max-h-10 w-auto max-w-full object-contain sm:max-h-14" src="/footer.png" />
+    <footer className="z-20 shrink-0 border-t-2 border-gold-500 shadow-[0_-10px_30px_rgba(0,0,0,0.15)]">
+      <div 
+        className="flex w-full items-center justify-center overflow-hidden px-4"
+        style={{
+          background: '#103f34',
+          height: 'clamp(60px, 10vh, 100px)'
+        }}
+      >
+        <img 
+          alt="Footer institucional" 
+          className="h-full w-auto max-w-full object-contain py-2" 
+          src="/footer_refugios.webp" 
+        />
       </div>
     </footer>
   )

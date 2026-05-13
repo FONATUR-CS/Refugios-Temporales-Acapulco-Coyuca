@@ -4,6 +4,10 @@ import './lib/leaflet-global'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import '@fontsource/lato/300.css'
+import '@fontsource/lato/400.css'
+import '@fontsource/lato/700.css'
+import '@fontsource/lato/900.css'
 import App from './app/App.jsx'
 import './styles/index.css'
 

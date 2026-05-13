@@ -23,25 +23,92 @@ function getMapBounds(shelters, userLocation) {
   return points.length ? points : null
 }
 
-function FitShelterBounds({ shelters, userLocation }) {
+function fitOverview(map, bounds, { animate = false, duration } = {}) {
+  map.invalidateSize({ animate: false })
+
+  if (bounds?.length > 1) {
+    map.fitBounds(bounds, {
+      animate,
+      duration,
+      padding: [34, 34],
+      maxZoom: 14,
+    })
+    return
+  }
+
+  if (bounds?.length === 1) {
+    map.setView(bounds[0], 14, { animate, duration })
+    return
+  }
+
+  map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, { animate, duration })
+}
+
+function scheduleMapSizeRefresh(map, callback) {
+  let frameId = null
+  let timeoutId = null
+
+  frameId = window.requestAnimationFrame(() => {
+    map.invalidateSize({ animate: false })
+    callback?.()
+
+    timeoutId = window.setTimeout(() => {
+      map.invalidateSize({ animate: false })
+      callback?.()
+    }, 180)
+  })
+
+  return () => {
+    if (frameId) window.cancelAnimationFrame(frameId)
+    if (timeoutId) window.clearTimeout(timeoutId)
+  }
+}
+
+function InvalidateMapSize() {
+  const map = useMap()
+
+  useEffect(() => {
+    const refresh = () => map.invalidateSize({ animate: false })
+    const cancelInitialRefresh = scheduleMapSizeRefresh(map)
+
+    window.addEventListener('resize', refresh)
+    window.visualViewport?.addEventListener('resize', refresh)
+
+    return () => {
+      cancelInitialRefresh()
+      window.removeEventListener('resize', refresh)
+      window.visualViewport?.removeEventListener('resize', refresh)
+    }
+  }, [map])
+
+  return null
+}
+
+function FitShelterBounds({ shelters, userLocation, currentMunicipality }) {
   const map = useMap()
   const fittedOnceRef = useRef(false)
+  const lastMunicipalityRef = useRef(currentMunicipality)
+
   const boundsKey = `${shelters.map((shelter) => shelter.id).join('|')}|${userLocation?.lat ?? ''}|${userLocation?.lng ?? ''}`
   const bounds = useMemo(() => getMapBounds(shelters, userLocation), [boundsKey, shelters, userLocation])
 
   useEffect(() => {
-    if (fittedOnceRef.current) return
-    if (!bounds?.length) return
-
-    fittedOnceRef.current = true
-
-    if (bounds.length === 1) {
-      map.setView(bounds[0], 14, { animate: true })
-      return
+    // Caso 1: Ajuste inicial (solo una vez)
+    if (!fittedOnceRef.current && bounds?.length) {
+      fittedOnceRef.current = true
+      return scheduleMapSizeRefresh(map, () => fitOverview(map, bounds))
     }
 
-    map.fitBounds(bounds, { padding: [34, 34], maxZoom: 14 })
-  }, [boundsKey, map])
+    // Caso 2: Cambio de municipio (Fly to municipality)
+    if (lastMunicipalityRef.current !== currentMunicipality) {
+      lastMunicipalityRef.current = currentMunicipality
+       
+      if (bounds?.length) {
+        map.closePopup()
+        fitOverview(map, bounds, { animate: true, duration: 1.2 })
+      }
+    }
+  }, [bounds, currentMunicipality, map])
 
   return null
 }
@@ -92,18 +159,18 @@ function ResetViewControl({ shelters, userLocation }) {
 
         if (currentBounds?.length > 1) {
           map.closePopup()
-          map.fitBounds(currentBounds, { animate: true, padding: [34, 34], maxZoom: 14 })
+          fitOverview(map, currentBounds, { animate: true })
           return
         }
 
         if (currentBounds?.length === 1) {
           map.closePopup()
-          map.setView(currentBounds[0], 14, { animate: true })
+          fitOverview(map, currentBounds, { animate: true })
           return
         }
 
         map.closePopup()
-        map.setView(DEFAULT_CENTER, DEFAULT_ZOOM, { animate: true })
+        fitOverview(map, currentBounds, { animate: true })
       })
 
       return container
@@ -162,6 +229,44 @@ function UserLocationControl({ hasLocation, loading, onClearLocation, onRequestL
   return null
 }
 
+function MobileMenuControl({ onToggleMenu }) {
+  const map = useMap()
+
+  useEffect(() => {
+    const control = L.control({ position: 'topleft' })
+
+    control.onAdd = () => {
+      const container = L.DomUtil.create('div', 'leaflet-control map-ctrl mobile-menu-ctrl')
+      const button = L.DomUtil.create('button', 'map-ctrl-btn', container)
+      button.type = 'button'
+      button.title = 'Abrir menú de refugios'
+      button.setAttribute('aria-label', 'Abrir menú de refugios')
+      button.innerHTML = `
+        <svg aria-hidden="true" class="map-ctrl-icon" viewBox="0 0 24 24" focusable="false">
+          <path d="M4 6h16" />
+          <path d="M4 12h16" />
+          <path d="M4 18h16" />
+        </svg>
+      `
+
+      L.DomEvent.disableClickPropagation(container)
+      L.DomEvent.disableScrollPropagation(container)
+      L.DomEvent.on(button, 'click', (event) => {
+        L.DomEvent.preventDefault(event)
+        onToggleMenu()
+      })
+
+      return container
+    }
+
+    control.addTo(map)
+
+    return () => control.remove()
+  }, [map, onToggleMenu])
+
+  return null
+}
+
 function UserLocationMarker({ location }) {
   if (!location) return null
 
@@ -179,6 +284,28 @@ function UserLocationMarker({ location }) {
   )
 }
 
+function MapLegend() {
+  return (
+    <div className="pointer-events-none absolute bottom-4 right-4 z-[450] hidden rounded-2xl border border-white/70 bg-white/90 p-3 text-xs text-slate-700 shadow-lg backdrop-blur md:block">
+      <p className="mb-2 font-bold uppercase tracking-wide text-institutional-700">Leyenda</p>
+      <div className="space-y-1.5">
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full border-2 border-institutional-700 bg-white" />
+          <span>Refugio activo</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full border-2 border-[#c49953] bg-white" />
+          <span>Refugio seleccionado</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="h-3 w-3 rounded-full bg-emergency-600 ring-2 ring-blue-100" />
+          <span>Tu ubicación</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function ShelterMap({
   shelters,
   selectedShelter,
@@ -188,6 +315,8 @@ export function ShelterMap({
   userLocationLoading,
   onRequestUserLocation,
   onClearUserLocation,
+  onToggleMobilePanel,
+  currentMunicipality,
 }) {
   return (
     <MapContainer
@@ -210,9 +339,15 @@ export function ShelterMap({
           />
         </LayersControl.BaseLayer>
       </LayersControl>
-      <FitShelterBounds shelters={shelters} userLocation={userLocation} />
+      <FitShelterBounds
+        shelters={shelters}
+        userLocation={userLocation}
+        currentMunicipality={currentMunicipality}
+      />
+      <InvalidateMapSize />
       <FlyToSelectedShelter shelter={selectedShelter} />
       <ResetViewControl shelters={shelters} userLocation={userLocation} />
+      <MobileMenuControl onToggleMenu={onToggleMobilePanel} />
       <UserLocationControl
         hasLocation={Boolean(userLocation)}
         loading={userLocationLoading}
@@ -220,6 +355,7 @@ export function ShelterMap({
         onRequestLocation={onRequestUserLocation}
       />
       <UserLocationMarker location={userLocation} />
+      <MapLegend />
       <ClusterGroup
         animate
         chunkedLoading

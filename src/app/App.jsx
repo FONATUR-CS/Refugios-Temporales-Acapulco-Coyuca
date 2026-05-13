@@ -37,25 +37,23 @@ function LocationTools({ nearestShelter, onSelectNearest, userLocation }) {
     : null
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-      <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Refugio más cercano</p>
-          {nearestShelter ? (
-            <p className="font-display mt-1 line-clamp-2 text-sm font-bold text-slate-950">
+    <div className="rounded-xl border border-gold-100 bg-gradient-to-br from-gold-50 to-white p-2.5 shadow-sm">
+      <div className="text-center">
+        <p className="text-[10px] font-bold uppercase tracking-wide text-gold-700">Refugio más cercano</p>
+        {nearestShelter ? (
+          <div className="mt-1 flex items-center justify-center gap-2">
+            <p className="font-display line-clamp-1 text-xs font-bold text-slate-950">
               {nearestShelter.name}
             </p>
-          ) : (
-            <p className="mt-1 text-sm font-semibold text-slate-700">
-              Activa tu ubicación para calcularlo.
-            </p>
-          )}
-        </div>
-        {nearestShelter ? (
-          <span className="shrink-0 rounded-full bg-emergency-50 px-3 py-1 text-xs font-extrabold text-emergency-700">
-            {nearestShelter.distanceLabel}
-          </span>
-        ) : null}
+            <span className="shrink-0 rounded-full bg-institutional-700 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
+              {nearestShelter.distanceLabel}
+            </span>
+          </div>
+        ) : (
+          <p className="mt-0.5 text-xs font-semibold text-slate-700">
+            Activa tu ubicación
+          </p>
+        )}
       </div>
       {userLocation?.accuracy ? (
         <p className="mt-2 text-xs text-slate-500">
@@ -65,14 +63,14 @@ function LocationTools({ nearestShelter, onSelectNearest, userLocation }) {
       {nearestShelter ? (
         <div className="mt-3 grid grid-cols-2 gap-2">
           <button
-            className="min-h-10 rounded-xl bg-white px-3 py-2 text-sm font-extrabold text-slate-800 ring-1 ring-slate-200 transition hover:bg-slate-100"
+            className="min-h-9 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-800 ring-1 ring-gold-100 transition hover:bg-gold-50"
             onClick={() => onSelectNearest(nearestShelter.id)}
             type="button"
           >
             Ver en mapa
           </button>
           <a
-            className="inline-flex min-h-10 items-center justify-center rounded-xl bg-institutional-700 px-3 py-2 text-sm font-extrabold text-white transition hover:bg-institutional-900"
+            className="inline-flex min-h-9 items-center justify-center rounded-lg bg-institutional-700 px-3 py-1.5 text-xs font-bold text-white shadow-sm transition hover:bg-institutional-600"
             href={directionsUrl}
             rel="noreferrer"
             target="_blank"
@@ -85,39 +83,56 @@ function LocationTools({ nearestShelter, onSelectNearest, userLocation }) {
   )
 }
 
-function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePanel }) {
+function Panel({ data, filters, locationTools, onToggleMobilePanel }) {
   const capacity = locationTools.visibleShelters.reduce((sum, shelter) => sum + (shelter.capacityPeople ?? 0), 0)
   const isFiltered = locationTools.visibleShelters.length !== data.shelters.length
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 p-3 md:overflow-hidden">
+    <div className="flex h-full min-h-0 flex-col gap-2 p-2">
       <div className="shrink-0">
-        <div className="mx-auto mb-2 h-1 w-10 rounded-full bg-slate-300 md:hidden" />
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-wider text-institutional-700">
-              Refugios activos 2026
-            </p>
-            <h2 className="font-display mt-0.5 truncate text-base font-bold text-slate-950 sm:text-lg">
-              Encuentra el refugio más cercano
-            </h2>
-            <p className="mt-0.5 text-xs leading-4 text-slate-600 sm:leading-5">
-              {formatNumber(locationTools.visibleShelters.length)} refugio{locationTools.visibleShelters.length !== 1 ? 's' : ''}
-              {isFiltered ? ' filtrados' : ' activos'} · Capacidad{' '}
-              {capacity ? formatNumber(capacity) : 'S/D'} personas
-            </p>
-          </div>
-          <button
-            className="shrink-0 rounded-xl bg-institutional-700 px-3 py-2 text-xs font-extrabold text-white shadow-sm transition hover:bg-institutional-900 md:hidden"
+        <div className="flex items-center justify-between gap-2 md:hidden">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-institutional-700">Menú de Refugios</p>
+          <button 
             onClick={onToggleMobilePanel}
-            type="button"
+            className="rounded-full p-1 text-slate-400 hover:bg-slate-100"
           >
-            {mobileExpanded ? 'Minimizar' : 'Ver lista'}
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
+        <div className="rounded-lg bg-gradient-to-br from-institutional-700 via-institutional-700 to-institutional-600 p-1.5 text-white shadow-sm ring-1 ring-white/20">
+          <div className="min-w-0">
+            <p className="text-[9px] font-bold uppercase tracking-wider text-sand-100">
+              Temporada de Ciclones 2026
+            </p>
+            <h2 className="font-display mt-0.5 truncate text-xs font-bold text-white sm:text-sm">
+              Estadísticas actuales
+            </h2>
+          </div>
+          <div className="mt-1.5 grid grid-cols-2 gap-1.5 text-[9px]">
+            <div className="rounded-md bg-white/10 px-1.5 py-1 ring-1 ring-white/10">
+              <p className="font-bold text-sand-100 leading-tight">Visibles</p>
+              <p className="text-sm font-bold leading-none text-white">
+                {formatNumber(locationTools.visibleShelters.length)}
+              </p>
+            </div>
+            <div className="rounded-md bg-white/10 px-1.5 py-1 ring-1 ring-white/10">
+              <p className="font-bold text-sand-100 leading-tight">Capacidad</p>
+              <p className="text-sm font-bold leading-none text-white">
+                {capacity ? formatNumber(capacity) : 'S/D'}
+              </p>
+            </div>
+          </div>
+          {isFiltered ? (
+            <p className="mt-1.5 inline-flex rounded-full bg-gold-500 px-2 py-0.5 text-[9px] font-bold text-white shadow-sm">
+              Filtro: {filters.municipality}
+            </p>
+          ) : null}
+        </div>
       </div>
-      <div className={`${mobileExpanded ? 'flex' : 'hidden'} mobile-panel-scroll min-h-0 flex-1 flex-col gap-3 overflow-y-auto overscroll-contain md:flex md:overflow-hidden`}>
-        <div className="space-y-2.5">
+      <div className="mobile-panel-scroll flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overscroll-contain">
+        <div className="space-y-2">
           <DataWarnings warnings={data.warnings} />
           <ShelterFilters
             municipalities={filters.municipalities}
@@ -129,7 +144,7 @@ function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePan
           />
           <div className="grid grid-cols-2 gap-2">
             <button
-              className="min-h-11 rounded-xl bg-institutional-700 px-3 py-2 text-sm font-extrabold text-white transition hover:bg-institutional-900 disabled:cursor-not-allowed disabled:opacity-60"
+              className="min-h-9 rounded-lg bg-gold-500 px-3 py-1.5 text-xs font-bold text-black shadow-sm transition hover:bg-gold-600 disabled:cursor-not-allowed disabled:opacity-60"
               disabled={locationTools.loading}
               onClick={locationTools.requestLocation}
               type="button"
@@ -137,7 +152,7 @@ function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePan
               {locationTools.loading ? 'Ubicando...' : 'Usar mi ubicación'}
             </button>
             <button
-              className="min-h-11 rounded-xl bg-white px-3 py-2 text-sm font-extrabold text-slate-800 ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-9 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-slate-800 ring-1 ring-slate-200 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={!locationTools.userLocation}
               onClick={locationTools.clearLocation}
               type="button"
@@ -155,16 +170,13 @@ function Panel({ data, filters, locationTools, mobileExpanded, onToggleMobilePan
             onSelectNearest={filters.setSelectedShelterId}
             userLocation={locationTools.userLocation}
           />
-          <div className="flex items-center justify-between gap-3 text-sm">
+          <div className="flex items-center justify-between gap-3 text-xs">
             <p className="font-bold text-slate-900">
-              {locationTools.visibleShelters.length.toLocaleString('es-MX')} refugios visibles
-            </p>
-            <p className="text-slate-500">
-              Total cargado: {data.diagnostics?.joinedShelters?.toLocaleString('es-MX') ?? data.shelters.length}
+              {locationTools.visibleShelters.length.toLocaleString('es-MX')} refugios
             </p>
           </div>
         </div>
-        <div className="min-h-0 flex-none overflow-visible md:flex-1 md:overflow-y-auto md:pr-1 lg:pb-2">
+        <div className="min-h-0 flex-1 overflow-y-auto pr-1 pb-2">
           <ShelterList
             onSelect={filters.setSelectedShelterId}
             selectedShelterId={filters.selectedShelterId}
@@ -234,6 +246,7 @@ export default function App() {
       <Header />
       <ErrorBoundary>
         <Shell
+          onClosePanel={() => setMobilePanelExpanded(false)}
           panelExpanded={mobilePanelExpanded}
           map={
             <ShelterMap
@@ -245,14 +258,15 @@ export default function App() {
               shelters={visibleShelters}
               userLocation={userLocation.location}
               userLocationLoading={userLocation.loading}
+              currentMunicipality={filters.municipality}
+              onToggleMobilePanel={() => setMobilePanelExpanded((expanded) => !expanded)}
             />
           }
           panel={
             <Panel
               data={data}
               filters={{ ...filters, setSelectedShelterId: selectShelter }}
-              mobileExpanded={mobilePanelExpanded}
-              onToggleMobilePanel={() => setMobilePanelExpanded((expanded) => !expanded)}
+              onToggleMobilePanel={() => setMobilePanelExpanded(false)}
               locationTools={{
                 clearLocation: userLocation.clearLocation,
                 error: userLocation.error,

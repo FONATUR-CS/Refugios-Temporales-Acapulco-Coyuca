@@ -88,11 +88,40 @@ textarea {
   font-family: Geomanist, Inter, system-ui, sans-serif;
 }
 
-.leaflet-control-layers,
-.leaflet-bar a {
+.leaflet-control-layers {
   border-radius: 12px;
   border: 1px solid rgba(148, 163, 184, 0.45);
   box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+.leaflet-bar,
+.leaflet-control-zoom {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.leaflet-bar a {
+  align-items: center;
+  background: #ffffff !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.18);
+  color: #0f172a !important;
+  display: grid;
+  font-family: Lato, Geomanist, Inter, system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+  place-items: center;
+  transition: background 0.15s;
+}
+
+.leaflet-bar a:hover,
+.leaflet-bar a:focus-visible {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
 }
 
 .leaflet-popup-content-wrapper {
@@ -158,6 +187,17 @@ textarea {
   width: 44px;
 }
 
+.leaflet-touch .mobile-menu-ctrl .map-ctrl-btn {
+  height: 30px;
+  width: 30px;
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-ctrl {
+    display: none !important;
+  }
+}
+
 .user-location-marker {
   filter: drop-shadow(0 8px 18px rgba(37, 99, 235, 0.35));
 }
@@ -195,26 +235,29 @@ textarea {
 
 .shelter-pin--selected {
   background: #ffffff;
-  border-color: #2563eb;
-  border-width: 3.5px;
+  /* Línea exterior con degradado */
+  border: 3.5px solid transparent;
+  background-image: linear-gradient(#ffffff, #ffffff), linear-gradient(135deg, #c49953 0%, #ddc9a3 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
   z-index: 1000;
   animation: selected-marker-breathe 1.8s ease-in-out infinite;
-  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2), 0 8px 24px rgba(15, 23, 42, 0.35);
+  box-shadow: 0 0 0 6px rgba(196, 153, 83, 0.2), 0 8px 24px rgba(15, 23, 42, 0.35);
 }
 
 @keyframes selected-marker-breathe {
   0%,
   100% {
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15), 0 8px 20px rgba(15, 23, 42, 0.3);
+    box-shadow: 0 0 0 4px rgba(196, 153, 83, 0.2), 0 8px 20px rgba(15, 23, 42, 0.3);
   }
 
   50% {
-    box-shadow: 0 0 0 12px rgba(37, 99, 235, 0.08), 0 10px 24px rgba(15, 23, 42, 0.35);
+    box-shadow: 0 0 0 14px rgba(221, 201, 163, 0.12), 0 10px 24px rgba(15, 23, 42, 0.35);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .shelter-marker-selected {
+  .shelter-pin--selected {
     animation: none;
   }
 }
@@ -247,16 +290,16 @@ textarea {
 
 /* ─── Cluster personalizado ────────────────────────── */
 .shelter-cluster {
-  background: #0f5e55;
-  border: 3px solid rgba(255, 255, 255, 0.85);
+  background: #103f34;
+  border: 3px solid #ddc9a3;
   border-radius: 50%;
-  box-shadow: 0 2px 10px rgba(15, 94, 85, 0.45);
+  box-shadow: 0 2px 12px rgba(16, 63, 52, 0.48);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-family: Geomanist, Inter, system-ui, sans-serif;
-  font-weight: 800;
+  font-family: Inter, Geomanist, system-ui, sans-serif;
+  font-weight: 700;
   font-size: 13px;
   line-height: 1;
   cursor: pointer;
@@ -265,7 +308,7 @@ textarea {
 
 .shelter-cluster:hover {
   transform: scale(1.12);
-  box-shadow: 0 4px 14px rgba(15, 94, 85, 0.55);
+  box-shadow: 0 4px 16px rgba(196, 153, 83, 0.55);
 }
 
 /* Anillo exterior (spiderfy preview on hover) */
